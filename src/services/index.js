@@ -12,8 +12,8 @@ export default ({
         })
       })
   },
-  search (query) {
-    return Vue.http.get(`http://swapi.co/api/search=${query}`)
+  search (type, query) {
+    return Vue.http.get(`http://swapi.co/api/${type}?search=${query}`)
       .then(payload => {
         return new Promise((resolve, reject) => {
           if (payload.ok !== true) {

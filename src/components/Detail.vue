@@ -4,7 +4,7 @@
     </div>
 </template>
 <script>
-  import StarWars from '../services'
+  import Service from '../services'
 
   export default {
     name: 'detail',
@@ -14,7 +14,7 @@
       }
     },
     created () {
-      StarWars.get(this.$route.params.type, this.$route.params.id)
+      Service.get(this.$route.params.type, this.$route.params.id)
         .then(data => {
           this.people = data
         })
