@@ -31,11 +31,14 @@
                 </div>
 
                 <div class="col-md-6">
-                    <ul class="list-group">
+                    <ul class="list-group" v-if="results.length">
                         <li class="list-group-item" v-for="item in results">
                             <router-link :to="item.path">{{item.name}}</router-link>
                         </li>
                     </ul>
+                    <div v-if="!results.length">
+                        Empty data
+                    </div>
                 </div>
             </div>
         </div>
