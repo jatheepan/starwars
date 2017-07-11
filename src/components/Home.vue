@@ -22,11 +22,11 @@
                     <div class="input-group">
                         <input v-model="term" class="form-control" type="search" placeholder="Keyword">
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-primary" @click="search()">Go</button>
+                            <button type="submit" class="btn btn-primary" @click="onSubmitClick(type, term)">Go</button>
                         </span>
                     </div>
-                    <ul>
-                        <li v-for="item in history">{{item.type}} - {{item.term}}</li>
+                    <ul class="history">
+                        <li @click="onHistoryItemClick(item)" v-for="item in history">{{item.type}} > {{item.term}}</li>
                     </ul>
                 </div>
 
@@ -56,19 +56,42 @@
       }
     },
     methods: {
-      search () {
-        this.history.unshift({type: this.type, term: this.term})
+      /**
+       * When user click on GO button do search and save history
+       * @param type
+       * @param term
+       */
+      onSubmitClick (type, term) {
+        this.history.unshift({type: type, term: term})
+        this.search(type, term)
+      },
 
-        Service.search(this.type, this.term)
+      /**
+       * When user click on history perform search
+       * @param data
+       */
+      onHistoryItemClick (data) {
+        this.type = data.type
+        this.term = data.term
+        this.search(this.type, this.term)
+      },
+
+      /**
+       * Perform search
+       * @param type
+       * @param term
+       */
+      search (type, term) {
+        Service.search(type, term)
           .then(data => {
-            if (data.results && data.results.length) {
+            const results = data.results || []
+
+            results.forEach(item => {
               const regex = /\/(\d{1,})\//g
-              data.results.forEach(item => {
-                const match = regex.exec(item.url)
-                item.path = `detail/${this.type}/` + match[1]
-              })
-              this.results = data.results
-            }
+              const match = regex.exec(item.url)
+              item.path = `detail/${this.type}/` + match[1]
+            })
+            this.results = results
           })
       }
     }
@@ -80,5 +103,11 @@
         font-weight: normal;
     }
 
+    .history {
+        list-style: none;
+        margin: 20px 0 0 0;
+        padding: 10px 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
 
 </style>
